@@ -14,6 +14,7 @@ public class Controller {
     //http://localhost:8080/api/doc
     @Autowired
     private DocumentService documentService;
+    
     @GetMapping("/getAll")
     public List<Document> getAllProduct(){
         return documentService.getALlDocument();
