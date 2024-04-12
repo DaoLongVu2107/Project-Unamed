@@ -29,11 +29,6 @@ public class User {
 
     }
 
-    public User(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
-
     public int getIdUser() {
         return idUser;
     }

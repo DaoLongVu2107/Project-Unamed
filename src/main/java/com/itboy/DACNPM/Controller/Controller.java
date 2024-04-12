@@ -4,7 +4,10 @@ package com.itboy.DACNPM.Controller;
 import com.itboy.DACNPM.Enity.Document;
 import com.itboy.DACNPM.Service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -22,20 +25,5 @@ public class Controller {
     public String createDocument(Document document){
         documentService.createDocument(document);
         return "Complete";
-    }
-    @GetMapping("/getBysymbolNumber")
-    public List<Document>getBySymbolNumber(@RequestParam String symbolNumber){
-        return   documentService.findDocbySymbolNumber(symbolNumber);
-
-    }
-    @GetMapping("/getByYear")
-    public List<Document>getByYear(@RequestParam int year){
-        return documentService.findDocumentsByYear(year);
-
-    }
-    @GetMapping("/getByField")
-    public List<Document>getByField(@RequestParam String field){
-        return documentService.findDocumentsByField(field);
-
     }
 }
