@@ -25,5 +25,21 @@ public class Controller {
     public String createDocument(Document document){
         documentService.createDocument(document);
         return "Complete";
+
+    }
+    @GetMapping("/getBysymbolNumber")
+    public List<Document>getBySymbolNumber(@RequestParam String symbolNumber){
+        return   documentService.findDocbySymbolNumber(symbolNumber);
+
+    }
+    @GetMapping("/getByYear")
+    public List<Document>getByYear(@RequestParam int year){
+        return documentService.findDocumentsByYear(year);
+
+    }
+    @GetMapping("/getByField")
+    public List<Document>getByField(@RequestParam String field){
+        return documentService.findDocumentsByField(field);
+
     }
 }
