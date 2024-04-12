@@ -18,4 +18,12 @@ public class DocumentService {
     public Optional<Document> findById(int id){
         return documentRepository.findById(id);
     }
+
+    public Document createDocument(Document document){
+       return documentRepository.save(document);
+    }
+    public void deleteDocument(int id){
+        documentRepository.deleteById(id);
+        
+    }
 }
