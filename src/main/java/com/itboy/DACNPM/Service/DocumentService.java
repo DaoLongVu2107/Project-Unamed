@@ -22,4 +22,8 @@ public class DocumentService {
     public Document createDocument(Document document){
        return documentRepository.save(document);
     }
+    public void deleteDocument(int id){
+        documentRepository.deleteById(id);
+        
+    }
 }
