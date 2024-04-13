@@ -22,6 +22,7 @@ public class DocumentService {
     public Document createDocument(Document document){
        return documentRepository.save(document);
     }
+
     public void deleteDocument(int id) {
         documentRepository.deleteById(id);
 
@@ -37,5 +38,6 @@ public class DocumentService {
 
     public List<Document> findDocumentsByField(String field) {
         return documentRepository.findByField(field);
+
     }
 }

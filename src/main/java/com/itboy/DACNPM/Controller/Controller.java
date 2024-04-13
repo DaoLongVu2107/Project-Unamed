@@ -4,7 +4,9 @@ package com.itboy.DACNPM.Controller;
 import com.itboy.DACNPM.Enity.Document;
 import com.itboy.DACNPM.Service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +19,7 @@ public class Controller {
     private DocumentService documentService;
     @Value("${file.upload-dir}") // Đường dẫn thư mục để lưu trữ tệp
     private String uploadDir;
+
     @GetMapping("/getAll")
     public List<Document> getAllProduct(){
         return documentService.getALlDocument();
