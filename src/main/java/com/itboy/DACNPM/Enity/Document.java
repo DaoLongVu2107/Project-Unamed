@@ -16,7 +16,9 @@ public class Document {
     private Date date;
     private String describeOfDoc;
     private String issuingAuthority;
-    private String version;
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int version;
     private String field;
     private String fileUrl;
 
@@ -97,5 +99,24 @@ public class Document {
         this.version = version;
         this.field = field;
         this.fileUrl = fileUrl;
+    }
+
+    public Document(int idDocument, String symbolNumber, Date date, String describeOfDoc, String issuingAuthority, int version, String field, String fileUrl) {
+        this.idDocument = idDocument;
+        this.symbolNumber = symbolNumber;
+        this.date = date;
+        this.describeOfDoc = describeOfDoc;
+        this.issuingAuthority = issuingAuthority;
+        this.version = version;
+        this.field = field;
+        this.fileUrl = fileUrl;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 }

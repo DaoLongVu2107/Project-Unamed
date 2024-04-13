@@ -34,5 +34,7 @@ public class UserSevice {
         return 0;
     }
 
-
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 }
