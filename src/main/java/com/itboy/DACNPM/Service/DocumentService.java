@@ -22,8 +22,22 @@ public class DocumentService {
     public Document createDocument(Document document){
        return documentRepository.save(document);
     }
-    public void deleteDocument(int id){
+
+    public void deleteDocument(int id) {
         documentRepository.deleteById(id);
-        
+
+    }
+
+    public List<Document> findDocbySymbolNumber(String symbolNumber) {
+        return documentRepository.findBySymbolNumber(symbolNumber);
+    }
+
+    public List<Document> findDocumentsByYear(int year) {
+        return documentRepository.findDocumentsByYear(year);
+    }
+
+    public List<Document> findDocumentsByField(String field) {
+        return documentRepository.findByField(field);
+
     }
 }
