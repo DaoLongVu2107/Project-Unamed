@@ -16,8 +16,17 @@ public class Document {
     private Date date;
     private String describeOfDoc;
     private String issuingAuthority;
+    private String version;
     private String field;
     private String fileUrl;
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
     public Document() {
 
@@ -79,12 +88,13 @@ public class Document {
         this.fileUrl = fileUrl;
     }
 
-    public Document(int idDocument, String symbolNumber, Date date, String describeOfDoc, String issuingAuthority, String field, String fileUrl) {
+    public Document(int idDocument, String symbolNumber, Date date, String describeOfDoc, String issuingAuthority, String version, String field, String fileUrl) {
         this.idDocument = idDocument;
         this.symbolNumber = symbolNumber;
         this.date = date;
         this.describeOfDoc = describeOfDoc;
         this.issuingAuthority = issuingAuthority;
+        this.version = version;
         this.field = field;
         this.fileUrl = fileUrl;
     }
