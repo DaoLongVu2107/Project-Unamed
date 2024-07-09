@@ -9,8 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Date;
 import java.util.List;
 
-@Repository
-public interface  DocumentRepository extends JpaRepository<Document, Integer> {
+public interface  DocumentRepository extends JpaRepository<Document, Long> {
     List<Document> findBySymbolNumber(String symbolNumber);
     @Query("SELECT d FROM Document d WHERE YEAR(d.date) = :year")
     List<Document> findDocumentsByYear(@Param("year") int year);
