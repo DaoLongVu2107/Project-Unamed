@@ -96,6 +96,10 @@ public class DocumentService {
 
     }
 
+    public Document getDoccById(Long docId) {
+        return documentRepository.findById(docId).orElseThrow(()-> new RuntimeException("Doc not found"));
+    }
+
     public DocumentVersion getDocById(Long docId) {
         return documentVersionRepository.findById(docId).orElseThrow(()-> new RuntimeException("Doc not found"));
     }

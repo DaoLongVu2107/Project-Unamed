@@ -54,7 +54,7 @@ public class UserSevice {
         //check password
         Optional<Role> optionalRole = roleRepository.findById(roleId);
         if(optionalRole.isEmpty() || roleId!=existingUser.getRole().getIdRole()) {
-            throw new DataNotFoundException("USER DOES NOT HAVE PERMISSIONS ");
+                throw new DataNotFoundException("USER DOES NOT HAVE PERMISSIONS ");
         }
 //        if(!optionalUser.get().isAtive()) {
 //            throw new DataNotFoundException("USER_IS_LOCKED");
