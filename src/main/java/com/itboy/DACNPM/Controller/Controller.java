@@ -3,12 +3,12 @@ package com.itboy.DACNPM.Controller;
 
 import com.itboy.DACNPM.DTO.DocumentDTO;
 import com.itboy.DACNPM.DTO.DocumentVersionDTO;
+import com.itboy.DACNPM.DTO.UpdateDocumentDTO;
 import com.itboy.DACNPM.Enity.Document;
 import com.itboy.DACNPM.Enity.DocumentVersion;
 import com.itboy.DACNPM.Service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.beans.factory.annotation.Value;
 
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -39,11 +38,19 @@ public class Controller {
     private DocumentService documentService;
 //    @Value("${file.upload-dir}") // Đường dẫn thư mục để lưu trữ tệp
 //    private String uploadDir;
-
+    @PutMapping("/apply/{idDoc}")//admin
+        public ResponseEntity<?> applyFile(@PathVariable("idDoc") Long idDoc,@RequestParam Boolean status){
+        return ResponseEntity.ok().body(documentService.applyDocument(idDoc,status));
+    }
+    @PutMapping("/update/{idDoc}")
+    public ResponseEntity<?> updateFile(@PathVariable("idDoc") Long idDoc,@RequestBody UpdateDocumentDTO updateDocumentDTO){
+        return ResponseEntity.ok().body(documentService.updateDocument(idDoc,updateDocumentDTO));
+    }
     @GetMapping("/getAll")
     public List<Document> getAllProduct(){
         return documentService.getALlDocument();
     }
+
     @PostMapping("/create")
     public ResponseEntity<Document> createDocument(@RequestBody DocumentDTO documentDTO) {
         Document createdDocument = documentService.createDocument(documentDTO);
@@ -69,17 +76,16 @@ public class Controller {
     @GetMapping("/getByField")
     public List<Document>getByField(@RequestParam String field){
         return documentService.findDocumentsByField(field);
-
     }
     @GetMapping("/getByID/{id}")
-    public Document getByID(@PathVariable("id") Long field){
-        return documentService.getDoccById(field);
+    public Document getByID(@PathVariable("id") Long id){
+        return documentService.getDoccById(id);
 
     }
     @DeleteMapping("/delete/{id}")
-    public String deleteOrder(@PathVariable("id") Long id){
+    public ResponseEntity<?> deleteDoc(@PathVariable("id") Long id){
         documentService.deleteDocument(id);
-        return "Deleted";
+        return ResponseEntity.ok().body("Deleted");
     }
     @PostMapping(value = "/uploads/{id}",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

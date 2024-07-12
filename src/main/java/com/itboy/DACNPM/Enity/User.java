@@ -27,7 +27,7 @@ public class User implements UserDetails  {
     private String email;
     private String phone;
     private String password;
-
+    private Boolean active;
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference
     private List<Document> documents = new ArrayList<>();

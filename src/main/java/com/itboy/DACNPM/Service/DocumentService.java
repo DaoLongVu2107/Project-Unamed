@@ -2,6 +2,7 @@ package com.itboy.DACNPM.Service;
 
 import com.itboy.DACNPM.DTO.DocumentDTO;
 import com.itboy.DACNPM.DTO.DocumentVersionDTO;
+import com.itboy.DACNPM.DTO.UpdateDocumentDTO;
 import com.itboy.DACNPM.Enity.Document;
 import com.itboy.DACNPM.Enity.DocumentVersion;
 import com.itboy.DACNPM.Enity.User;
@@ -11,6 +12,7 @@ import com.itboy.DACNPM.Repository.UserRepository;
 import com.itboy.DACNPM.exceptions.DataNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,6 +63,7 @@ public class DocumentService {
         return DocumentVersion.builder()
                 .versionNumber(detailDTO.getVersionNumber())
                 .createdBy(existingUser.get())
+                .status(false)
                 .build();
     }
 
@@ -69,6 +72,7 @@ public class DocumentService {
         Optional<Document> doc = documentRepository.findById(idDoc);
         List<DocumentVersion>documentVersion=   doc.get().getVersions();
         documentVersion.add(toDocDetail(document));
+
         doc.get().setVersions(documentVersion);
         return documentRepository.save(doc.get());
     }
@@ -127,4 +131,25 @@ public class DocumentService {
         return contentType != null && contentType.equals("application/pdf");
     }
 
+    public DocumentVersion applyDocument(Long idDoc,Boolean status) {
+        DocumentVersion documentVersion=
+        documentVersionRepository.findById(idDoc).orElseThrow(()-> new RuntimeException("Doc not found"));
+        documentVersion.setStatus(status);
+       return documentVersionRepository.save(documentVersion);
+    }
+    public Document updateDocument(Long idDoc, UpdateDocumentDTO updateDocumentDTO) {
+        Document document=
+                documentRepository.findById(idDoc).orElseThrow(()-> new RuntimeException("Doc not found"));
+        if (updateDocumentDTO.getSymbolNumber() != null) {
+            document.setSymbolNumber(updateDocumentDTO.getSymbolNumber());
+        }
+        if (updateDocumentDTO.getSymbolNumber() != null) {
+            document.setDescribeOfDoc(updateDocumentDTO.getDescribeOfDoc());
+        }if (updateDocumentDTO.getIssuingAuthority() != null) {
+            document.setIssuingAuthority(updateDocumentDTO.getIssuingAuthority());
+        }if (updateDocumentDTO.getField() != null) {
+            document.setField(updateDocumentDTO.getField());
+        }
+        return documentRepository.save(document);
+    }
 }
