@@ -32,6 +32,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/api/doc")
+@CrossOrigin(origins = "http://localhost:3000")
 public class Controller {
     //http://localhost:8080/api/doc
     @Autowired
