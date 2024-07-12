@@ -3,6 +3,8 @@ package com.itboy.DACNPM.Enity;
 import lombok.*;
 
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -18,5 +20,5 @@ public class LogMessage {
     private Long id;
     private String level;
     private String message;
-    private LocalDateTime timestamp;
+    private LocalDate timestamp;
 }
