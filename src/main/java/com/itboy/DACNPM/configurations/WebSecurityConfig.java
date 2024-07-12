@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -29,6 +30,7 @@ public class WebSecurityConfig {
     //Pair.of(String.format("%s/..", apiPrefix), "GET"),
     public SecurityFilterChain securityFilterChain(HttpSecurity http)  throws Exception{
         http
+
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(requests -> {
                     requests
@@ -37,15 +39,14 @@ public class WebSecurityConfig {
                                     String.format("%s/users/register", apiPrefix),
                                     String.format("%s/users/roles", apiPrefix),
                                     String.format("%s/users/login", apiPrefix),
+                                    String.format("%s/users/login", apiPrefix),
                                     String.format("%s/doc/getAll", apiPrefix)
                             ).permitAll()
+                            .requestMatchers(HttpMethod.GET, apiPrefix + "/doc/**").permitAll() // Cho phép GET tới /api/doc/*
                             .requestMatchers(GET,
-                                    String.format("%s/users/getAll", apiPrefix)).hasAnyRole(Role.ADMIN)
-                            .requestMatchers(PUT,
-                                    String.format("%s/doc/apply/**", apiPrefix)).hasAnyRole(Role.ADMIN)
-                            .requestMatchers(PUT,
-                                    String.format("%s/users/updateByAdmin/**", apiPrefix)).hasAnyRole(Role.ADMIN)
-
+                                    String.format("%s/doc/file/**", apiPrefix)).permitAll()
+                            .requestMatchers(GET,
+                                    String.format("%s/doc/view/**", apiPrefix)).permitAll()
                             .anyRequest().authenticated();
                             //.anyRequest().permitAll();
 

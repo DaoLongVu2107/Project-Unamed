@@ -10,7 +10,9 @@ import com.itboy.DACNPM.Service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
@@ -136,6 +139,7 @@ public class Controller {
         }
         String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         // Thêm UUID vào trước tên file để đảm bảo tên file là duy nhất
+        filename = filename.replaceAll("\\s+", "_");
         String uniqueFilename = UUID.randomUUID().toString() + "_" + filename;
         // Đường dẫn đến thư mục mà bạn muốn lưu file
         java.nio.file.Path uploadDir = Paths.get("uploads");
@@ -175,44 +179,74 @@ public class Controller {
 //            return ResponseEntity.notFound().build();
 //        }
 //    }
-    @GetMapping("/file/{link}")
-        public ResponseEntity<?> viewfile(@PathVariable String link) {
-        try {
-            java.nio.file.Path path = Paths.get("uploads/" + link);
-            UrlResource resource = new UrlResource(path.toUri());
-
-            if (resource.exists()) {
-                String encodedLink = URLEncoder.encode(link, StandardCharsets.UTF_8.toString());
-                URI redirectUri = new URI("http://localhost:8080/api/doc/view/" + encodedLink);
-                return ResponseEntity.status(HttpStatus.FOUND).location(redirectUri).build();
-            } else {
-                return ResponseEntity.status(HttpStatus.FOUND).location(new URI("/view/notfound.jpeg")).build();
+//    @GetMapping("/file/{link}")
+//        public ResponseEntity<?> viewfile(@PathVariable String link) {
+//        try {
+//            java.nio.file.Path path = Paths.get("uploads/" + link);
+//            UrlResource resource = new UrlResource(path.toUri());
+//            if (resource.exists()) {
+//                String encodedLink = URLEncoder.encode(link, StandardCharsets.UTF_8);
+//                URI redirectUri = new URI("http://localhost:8080/api/doc/view/" + encodedLink);
+//                return ResponseEntity.status(HttpStatus.FOUND).location(redirectUri).build();
+//            } else {
+//                return ResponseEntity.status(HttpStatus.FOUND).location(new URI("/view/notfound.jpeg")).build();
+//            }
+//        } catch (Exception e) {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
+//
+//    @GetMapping("/view/{link}")
+//    public ResponseEntity<?> viewFilePage(@PathVariable String link) {
+//        try {
+//            String decodedLink = java.net.URLDecoder.decode(link, StandardCharsets.UTF_8.toString());
+//            java.nio.file.Path path = Paths.get("uploads/" + decodedLink);
+//            UrlResource resource = new UrlResource(path.toUri());
+//            if (resource.exists()) {
+//                return ResponseEntity.ok()
+//                        .contentType(MediaType.APPLICATION_PDF)
+//                        .body(resource);
+//            } else {
+//                java.nio.file.Path notFoundPath = Paths.get("uploads/notfound.jpeg");
+//                UrlResource notFoundResource = new UrlResource(notFoundPath.toUri());
+//                return ResponseEntity.ok()
+//                        .contentType(MediaType.IMAGE_JPEG)
+//                        .body(notFoundResource);
+//            }
+//        } catch (Exception e) {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
+@GetMapping("/file/{link}")
+public ResponseEntity<?> viewFile(@PathVariable String link) {
+    try {
+        String decodedLink = java.net.URLDecoder.decode(link, StandardCharsets.UTF_8.toString());
+        Path path = Paths.get("uploads/", decodedLink);
+        Resource resource = new UrlResource(path.toUri());
+        if (resource.exists()) {
+            // Xác định loại nội dung chính xác dựa trên phần mở rộng tệp
+            String contentType = Files.probeContentType(path);
+            if (contentType == null) {
+                contentType = "application/octet-stream"; // Dự phòng
             }
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
 
-    @GetMapping("/view/{link}")
-    public ResponseEntity<?> viewFilePage(@PathVariable String link) {
-        try {
-            String decodedLink = java.net.URLDecoder.decode(link, StandardCharsets.UTF_8.toString());
-            java.nio.file.Path path = Paths.get("uploads/" + decodedLink);
-            UrlResource resource = new UrlResource(path.toUri());
+            // Tạo tiêu đề để yêu cầu trình duyệt hiển thị PDF nội tuyến
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"");
 
-            if (resource.exists()) {
-                return ResponseEntity.ok()
-                        .contentType(MediaType.APPLICATION_PDF)
-                        .body(resource);
-            } else {
-                java.nio.file.Path notFoundPath = Paths.get("uploads/notfound.jpeg");
-                UrlResource notFoundResource = new UrlResource(notFoundPath.toUri());
-                return ResponseEntity.ok()
-                        .contentType(MediaType.IMAGE_JPEG)
-                        .body(notFoundResource);
-            }
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .body(resource);
+        } else {
+            java.nio.file.Path notFoundPath = Paths.get("uploads/", "notfound.jpeg");
+            UrlResource notFoundResource = new UrlResource(notFoundPath.toUri());
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(notFoundResource);
         }
+    } catch (Exception e) {
+        return ResponseEntity.notFound().build();
     }
+}
 }
