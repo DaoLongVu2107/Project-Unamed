@@ -72,7 +72,6 @@ public class DocumentService {
         Optional<Document> doc = documentRepository.findById(idDoc);
         List<DocumentVersion>documentVersion=   doc.get().getVersions();
         documentVersion.add(toDocDetail(document));
-
         doc.get().setVersions(documentVersion);
         return documentRepository.save(doc.get());
     }
