@@ -36,7 +36,8 @@ public class WebSecurityConfig {
                                     //bo qua authen
                                     String.format("%s/users/register", apiPrefix),
                                     String.format("%s/users/roles", apiPrefix),
-                                    String.format("%s/users/login", apiPrefix)
+                                    String.format("%s/users/login", apiPrefix),
+                                    String.format("%s/doc/getAll", apiPrefix)
                             ).permitAll()
                             .requestMatchers(GET,
                                     String.format("%s/users/getAll", apiPrefix)).hasAnyRole(Role.ADMIN)
@@ -44,6 +45,7 @@ public class WebSecurityConfig {
                                     String.format("%s/doc/apply/**", apiPrefix)).hasAnyRole(Role.ADMIN)
                             .requestMatchers(PUT,
                                     String.format("%s/users/updateByAdmin/**", apiPrefix)).hasAnyRole(Role.ADMIN)
+
                             .anyRequest().authenticated();
                             //.anyRequest().permitAll();
 
