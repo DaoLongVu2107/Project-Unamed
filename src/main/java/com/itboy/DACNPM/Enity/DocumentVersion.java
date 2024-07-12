@@ -26,6 +26,7 @@ public class DocumentVersion extends BasicEntity{
     private Document document;
     private int versionNumber;
     private String filePath;
+    private boolean status;
     @ManyToOne
     @JoinColumn(name = "created_by")
     @JsonManagedReference

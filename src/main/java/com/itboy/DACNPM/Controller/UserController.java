@@ -1,6 +1,8 @@
 package com.itboy.DACNPM.Controller;
 
 import com.itboy.DACNPM.DTO.LoginDTO;
+import com.itboy.DACNPM.DTO.UpdateUserDTO;
+import com.itboy.DACNPM.DTO.UpdateUserDTOByAdmin;
 import com.itboy.DACNPM.DTO.UserDTO;
 import com.itboy.DACNPM.Enity.User;
 import com.itboy.DACNPM.Service.UserSevice;
@@ -92,5 +94,19 @@ public class UserController {
                         .data(UserResponse.fromUser(user))
                         .build()
         );
+    }
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable("id") Long id,
+                                        @RequestBody UpdateUserDTO updatedUserDTO) throws Exception {
+        return ResponseEntity.ok().body(userSevice.updateUser(id,updatedUserDTO));
+    }
+    @PutMapping("/updateByAdmin/{id}")//Admin
+    public ResponseEntity<?> updateUserByAdmin(@PathVariable("id") Long id,
+                                               @RequestBody UpdateUserDTOByAdmin updatedUserDTO) throws Exception {
+        return ResponseEntity.ok().body(userSevice.updateUserByAdmin(id,updatedUserDTO));
+    }
+    @GetMapping("/getAll")//admin
+    public ResponseEntity<?> getAllUser(){
+        return ResponseEntity.ok().body(userSevice.findallUser());
     }
 }
