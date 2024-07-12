@@ -136,6 +136,7 @@ public class Controller {
         }
         String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         // Thêm UUID vào trước tên file để đảm bảo tên file là duy nhất
+        filename = filename.replaceAll("\\s+", "_");
         String uniqueFilename = UUID.randomUUID().toString() + "_" + filename;
         // Đường dẫn đến thư mục mà bạn muốn lưu file
         java.nio.file.Path uploadDir = Paths.get("uploads");
@@ -181,7 +182,7 @@ public class Controller {
             java.nio.file.Path path = Paths.get("uploads/" + link);
             UrlResource resource = new UrlResource(path.toUri());
             if (resource.exists()) {
-                String encodedLink = URLEncoder.encode(link, StandardCharsets.UTF_8.toString());
+                String encodedLink = URLEncoder.encode(link, StandardCharsets.UTF_8);
                 URI redirectUri = new URI("http://localhost:8080/api/doc/view/" + encodedLink);
                 return ResponseEntity.status(HttpStatus.FOUND).location(redirectUri).build();
             } else {
@@ -198,7 +199,6 @@ public class Controller {
             String decodedLink = java.net.URLDecoder.decode(link, StandardCharsets.UTF_8.toString());
             java.nio.file.Path path = Paths.get("uploads/" + decodedLink);
             UrlResource resource = new UrlResource(path.toUri());
-
             if (resource.exists()) {
                 return ResponseEntity.ok()
                         .contentType(MediaType.APPLICATION_PDF)
