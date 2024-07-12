@@ -179,7 +179,6 @@ public class Controller {
         try {
             java.nio.file.Path path = Paths.get("uploads/" + link);
             UrlResource resource = new UrlResource(path.toUri());
-
             if (resource.exists()) {
                 String encodedLink = URLEncoder.encode(link, StandardCharsets.UTF_8.toString());
                 URI redirectUri = new URI("http://localhost:8080/api/doc/view/" + encodedLink);
