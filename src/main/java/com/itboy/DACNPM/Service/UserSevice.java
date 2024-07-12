@@ -1,5 +1,7 @@
 package com.itboy.DACNPM.Service;
 
+import com.itboy.DACNPM.DTO.UpdateUserDTO;
+import com.itboy.DACNPM.DTO.UpdateUserDTOByAdmin;
 import com.itboy.DACNPM.DTO.UserDTO;
 import com.itboy.DACNPM.Enity.Role;
 import com.itboy.DACNPM.Enity.User;
@@ -83,6 +85,7 @@ public class UserSevice {
                 .password(userDTO.getPassword())
                 .email(userDTO.getEmail())
                 .phone(userDTO.getPhoneNumber())
+                .active(true)
                 .build();
         newUser.setRole(role);
         String password = userDTO.getPassword();
@@ -100,4 +103,81 @@ public class UserSevice {
         user = userRepository.findByEmail(subject);
         return user.orElseThrow(() -> new Exception("User not found"));
     }
+    public User updateUser(Long userId, UpdateUserDTO updatedUserDTO) throws Exception {
+        // Find the existing user by userId
+        User existingUser = userRepository.findById(userId)
+                .orElseThrow(() -> new DataNotFoundException("User not found"));
+
+        // Check if the phone number is being changed and if it already exists for another user
+
+        String newPhoneNumber = updatedUserDTO.getPhoneNumber();
+        if (!existingUser.getPhone().equals(newPhoneNumber) &&
+                userRepository.existsByPhone(newPhoneNumber)) {
+            throw new DataIntegrityViolationException("Phone number already exists");
+        }
+
+        // Update user information based on the DTO
+        if (updatedUserDTO.getFullName() != null) {
+            existingUser.setFullName(updatedUserDTO.getFullName());
+        }
+
+        if (newPhoneNumber != null) {
+            existingUser.setPhone(newPhoneNumber);
+        }
+        // Update the password if it is provided in the DTO
+        if (updatedUserDTO.getPassword() != null
+                && !updatedUserDTO.getPassword().isEmpty()) {
+            if(!updatedUserDTO.getPassword().equals(updatedUserDTO.getRetypePassword())) {
+                throw new DataNotFoundException("Password and retype password not the same");
+            }
+            String newPassword = updatedUserDTO.getPassword();
+            String encodedPassword = passwordEncoder.encode(newPassword);
+            existingUser.setPassword(encodedPassword);
+        }
+        //existingUser.setRole(updatedRole);
+        // Save the updated user
+        return userRepository.save(existingUser);
+    }
+    public User updateUserByAdmin(Long userId, UpdateUserDTOByAdmin updatedUserDTO) throws Exception {
+        // Find the existing user by userId
+        User existingUser = userRepository.findById(userId)
+                .orElseThrow(() -> new DataNotFoundException("User not found"));
+
+        // Check if the phone number is being changed and if it already exists for another user
+
+        String newPhoneNumber = updatedUserDTO.getPhoneNumber();
+        if (!existingUser.getPhone().equals(newPhoneNumber) &&
+                userRepository.existsByPhone(newPhoneNumber)) {
+            throw new DataIntegrityViolationException("Phone number already exists");
+        }
+
+        // Update user information based on the DTO
+        if (updatedUserDTO.getFullName() != null) {
+            existingUser.setFullName(updatedUserDTO.getFullName());
+        }
+
+        if (newPhoneNumber != null) {
+            existingUser.setPhone(newPhoneNumber);
+        }
+        if (updatedUserDTO.getActive() != null) {
+            existingUser.setActive(updatedUserDTO.getActive());
+        }
+        // Update the password if it is provided in the DTO
+        if (updatedUserDTO.getPassword() != null
+                && !updatedUserDTO.getPassword().isEmpty()) {
+            if(!updatedUserDTO.getPassword().equals(updatedUserDTO.getRetypePassword())) {
+                throw new DataNotFoundException("Password and retype password not the same");
+            }
+            String newPassword = updatedUserDTO.getPassword();
+            String encodedPassword = passwordEncoder.encode(newPassword);
+            existingUser.setPassword(encodedPassword);
+        }
+        if (updatedUserDTO.getRoleId() != null) {
+            Optional<Role> updatedRole =roleRepository.findById(updatedUserDTO.getRoleId());
+            existingUser.setRole(updatedRole.get());
+        }
+        // Save the updated user
+        return userRepository.save(existingUser);
+    }
+
 }

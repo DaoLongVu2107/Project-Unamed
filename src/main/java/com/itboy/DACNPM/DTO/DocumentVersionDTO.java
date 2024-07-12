@@ -1,9 +1,6 @@
 package com.itboy.DACNPM.DTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.sql.Timestamp;
 
@@ -11,8 +8,12 @@ import java.sql.Timestamp;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class DocumentVersionDTO {
+
     private int versionNumber;
     private String filePath;
+    private Boolean status;
     private Long  createdBy;//id user
 }
